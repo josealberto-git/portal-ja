@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Portal JA</title>
+
+<style>
+
+body{
+background:black;
+color:#00ff9c;
+font-family:monospace;
+margin:0;
+}
+
+header{
+background:#020617;
+padding:15px;
+display:flex;
+justify-content:space-between;
+}
+
+button{
+background:black;
+color:#00ff9c;
+border:1px solid #00ff9c;
+padding:8px;
+margin:5px;
+cursor:pointer;
+}
+
+button:hover{
+background:#00ff9c;
+color:black;
+}
+
+.section{
+display:none;
+padding:30px;
+}
+
+.active{
+display:block;
+}
+
+.card{
+border:1px solid #00ff9c;
+padding:20px;
+margin:10px;
+display:inline-block;
+width:240px;
+}
+
+input,select{
+background:black;
+color:#00ff9c;
+border:1px solid #00ff9c;
+padding:8px;
+}
+
+textarea{
+width:100%;
+height:120px;
+background:black;
+color:#00ff9c;
+border:1px solid #00ff9c;
+}
+
+.hackerMenu{
+border-top:1px solid #00ff9c;
+margin-top:30px;
+padding-top:20px;
+}
+
+</style>
+
+<script>
+
+let usuarioLogado=null
+
+let usuarios=[
+
+{user:"master",senha:"123",tipo:"master"},
+{user:"admin",senha:"123",tipo:"admin"},
+{user:"cliente",senha:"123",tipo:"cliente"}
+
+]
+
+function mostrar(id){
+
+document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"))
+document.getElementById(id).classList.add("active")
+
+}
+
+function login(){
+
+let u=document.getElementById("user").value
+let s=document.getElementById("senha").value
+
+let encontrado=usuarios.find(x=>x.user==u && x.senha==s)
+
+if(!encontrado){
+alert("Login inválido")
+return
+}
+
+usuarioLogado=encontrado
+
+mostrar("cliente")
+
+if(encontrado.tipo!="cliente"){
+document.getElementById("btnAdmin").style.display="inline"
+}
+
+}
+
+function rastrearIP(){
+
+fetch("https://api.ipify.org?format=json")
+.then(r=>r.json())
+.then(d=>{
+document.getElementById("ip").innerText=d.ip
+})
+
+}
+
+function resetarSenha(){
+
+let u=document.getElementById("resetUser").value
+let nova=document.getElementById("resetSenha").value
+
+let alvo=usuarios.find(x=>x.user==u)
+
+if(!alvo){
+alert("Usuário não encontrado")
+return
+}
+
+if(usuarioLogado.tipo=="admin" && alvo.tipo=="master"){
+alert("Admin não pode alterar master")
+return
+}
+
+alvo.senha=nova
+
+alert("Senha alterada")
+
+}
+
+function criarUsuario(){
+
+if(usuarioLogado.tipo!="master"){
+alert("Somente master pode criar usuários")
+return
+}
+
+let u=document.getElementById("novoUser").value
+let s=document.getElementById("novaSenha").value
+let t=document.getElementById("tipoUser").value
+
+usuarios.push({user:u,senha:s,tipo:t})
+
+alert("Usuário criado")
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<header>
+
+<h2>PORTAL JA</h2>
+
+<div>
+
+<button onclick="mostrar('login')">Login</button>
+<button onclick="mostrar('cliente')">Área Cliente</button>
+<button id="btnAdmin" onclick="mostrar('admin')" style="display:none">Painel ADM</button>
+
+</div>
+
+</header>
+
+<!-- LOGIN -->
+
+<div id="login" class="section active">
+
+<h2>Login</h2>
+
+<input id="user" placeholder="Usuário"><br><br>
+<input id="senha" type="password" placeholder="Senha"><br><br>
+
+<button onclick="login()">Entrar</button>
+
+<p>📞 Suporte: (64) 99989-0702</p>
+
+<p>
+Canal:
+<a href="https://www.youtube.com/@JOS%C3%89ALBERTOVILELALOPES" target="_blank">
+YouTube
+</a>
+</p>
+
+</div>
+
+<!-- AREA CLIENTE -->
+
+<div id="cliente" class="section">
+
+<h2>Área do Cliente</h2>
+
+<h3>🎮 Jogos</h3>
+
+<div class="card">
+
+<h4>Minecraft</h4>
+
+<button onclick="window.open('https://classic.minecraft.net')">
+Abrir
+</button>
+
+</div>
+
+<div class="card">
+
+<h4>GTA (Web)</h4>
+
+<button onclick="window.open('https://gta.com.ua/files/gta2/')">
+Abrir
+</button>
+
+</div>
+
+<div class="card">
+
+<h4>Mortal Kombat</h4>
+
+<button onclick="window.open('https://www.retrogames.cc/arcade-games/mortal-kombat-ii-rev-l3-1.html')">
+Abrir
+</button>
+
+</div>
+
+<h3>🛠 Ferramentas</h3>
+
+<div class="card">
+
+<h4>Rastreador IP</h4>
+
+<button onclick="rastrearIP()">Mostrar</button>
+
+<p id="ip"></p>
+
+</div>
+
+<div class="card">
+
+<h4>Mini Navegador</h4>
+
+<input id="url" placeholder="https://site.com">
+
+<button onclick="window.open(document.getElementById('url').value)">
+Abrir
+</button>
+
+</div>
+
+<div class="card">
+
+<h4>Editor Arduino</h4>
+
+<textarea>
+
+void setup(){
+
+}
+
+void loop(){
+
+}
+
+</textarea>
+
+</div>
+
+<div class="card">
+
+<h4>YouTube → MP3</h4>
+
+<input placeholder="Link vídeo">
+
+<button onclick="alert('Simulação')">
+Converter
+</button>
+
+</div>
+
+<div class="card">
+
+<h4>Downloads</h4>
+
+<a href="#" download>Arquivo 1</a><br>
+<a href="#" download>Arquivo 2</a>
+
+</div>
+
+<!-- MENU HACKER -->
+
+<div class="hackerMenu">
+
+<h2>☠ MENU HACKER</h2>
+
+<button>SQL Injector</button>
+<button>Port Scanner</button>
+<button>WiFi Cracker</button>
+<button>DDOS Tool</button>
+<button>Password Brute Force</button>
+<button>Server Exploit</button>
+<button>Dark Web Scanner</button>
+<button>IP Logger</button>
+<button>Firewall Breaker</button>
+
+<p>⚠ Botões demonstrativos (não funcionais)</p>
+
+</div>
+
+</div>
+
+<!-- ADMIN -->
+
+<div id="admin" class="section">
+
+<h2>Painel Administrativo</h2>
+
+<h3>Resetar senha</h3>
+
+<input id="resetUser" placeholder="Usuário"><br>
+<input id="resetSenha" placeholder="Nova senha"><br>
+
+<button onclick="resetarSenha()">Resetar</button>
+
+<h3>Criar usuário (Master)</h3>
+
+<input id="novoUser" placeholder="Usuário"><br>
+<input id="novaSenha" placeholder="Senha"><br>
+
+<select id="tipoUser">
+<option value="cliente">Cliente</option>
+<option value="admin">Admin</option>
+<option value="master">Master</option>
+</select>
+
+<br>
+
+<button onclick="criarUsuario()">Criar</button>
+
+</div>
+
+</body>
+</html>
